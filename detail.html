@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PG Details - RentalMate</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: { 500: '#0ea5e9', 600: '#0284c7', 700: '#0369a1' },
+                        violet: { 500: '#a855f7', 600: '#9333ea', 700: '#7e22ce' }
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="font-sans antialiased bg-gray-50">
+    
+    <!-- Navbar -->
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-white shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-2">
+                    <div class="w-10 h-10 bg-gradient-to-br from-primary-500 to-violet-600 rounded-lg flex items-center justify-center">
+                        <i data-lucide="home" class="w-6 h-6 text-white"></i>
+                    </div>
+                    <span class="text-2xl font-bold bg-gradient-to-r from-primary-600 to-violet-600 bg-clip-text text-transparent">RentalMate</span>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button onclick="window.location.href='home.html'" class="px-4 py-2 text-gray-700 hover:text-primary-600 font-medium transition-colors">
+                        <i data-lucide="arrow-left" class="w-5 h-5 inline mr-1"></i> Back
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="pt-20 pb-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <!-- Image Carousel -->
+            <div class="bg-white rounded-2xl overflow-hidden shadow-lg mb-8">
+                <div class="relative h-96 md:h-[500px]">
+                    <div id="imageCarousel" class="carousel-container h-full">
+                        <div id="carouselTrack" class="carousel-track h-full">
+                            <!-- Images will be loaded here -->
+                        </div>
+                    </div>
+                    
+                    <!-- Carousel Controls -->
+                    <button onclick="changeSlide(-1)" class="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white transition-all shadow-lg">
+                        <i data-lucide="chevron-left" class="w-6 h-6"></i>
+                    </button>
+                    <button onclick="changeSlide(1)" class="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white transition-all shadow-lg">
+                        <i data-lucide="chevron-right" class="w-6 h-6"></i>
+                    </button>
+                    
+                    <!-- Image Counter -->
+                    <div class="absolute bottom-4 right-4 px-4 py-2 bg-black/70 text-white rounded-full text-sm">
+                        <span id="currentSlide">1</span> / <span id="totalSlides">5</span>
+                    </div>
+                    
+                    <!-- Zoom Button -->
+                    <button onclick="toggleZoom()" class="absolute top-4 right-4 w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white transition-all shadow-lg">
+                        <i data-lucide="maximize-2" class="w-5 h-5"></i>
+                    </button>
+                </div>
+                
+                <!-- Thumbnail Strip -->
+                <div id="thumbnailStrip" class="flex gap-2 p-4 overflow-x-auto">
+                    <!-- Thumbnails will be loaded here -->
+                </div>
+            </div>
+
+            <div class="grid lg:grid-cols-3 gap-8">
+                <!-- Left Column - Details -->
+                <div class="lg:col-span-2">
+                    <!-- Header -->
+                    <div class="bg-white rounded-2xl p-6 shadow-md mb-6">
+                        <div class="flex items-start justify-between mb-4">
+                            <div>
+                                <h1 id="pgName" class="text-3xl font-bold text-gray-900 mb-2">Loading...</h1>
+                                <div class="flex items-center text-gray-600 mb-2">
+                                    <i data-lucide="map-pin" class="w-5 h-5 mr-2"></i>
+                                    <span id="pgLocation">Loading...</span>
+                                </div>
+                                <div class="flex items-center gap-4">
+                                    <div class="flex items-center">
+                                        <i data-lucide="star" class="w-5 h-5 text-yellow-500 fill-yellow-500 mr-1"></i>
+                                        <span id="pgRating" class="font-semibold">0</span>
+                                        <span id="pgReviews" class="text-gray-600 ml-1">(0 reviews)</span>
+                                    </div>
+                                    <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-semibold flex items-center gap-1">
+                                        <i data-lucide="shield-check" class="w-4 h-4"></i> Verified
+                                    </span>
+                                </div>
+                            </div>
+                            <button onclick="sharePG()" class="p-3 bg-gray-100 rounded-full hover:bg-gray-200 transition-all">
+                                <i data-lucide="share-2" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Tabs -->
+                    <div class="bg-white rounded-2xl shadow-md overflow-hidden mb-6">
+                        <div class="flex border-b overflow-x-auto">
+                            <button onclick="switchTab('overview')" class="tab-button active px-6 py-4 font-semibold text-gray-700 hover:text-primary-600 border-b-2 border-transparent whitespace-nowrap" data-tab="overview">
+                                Overview
+                            </button>
+                            <button onclick="switchTab('amenities')" class="tab-button px-6 py-4 font-semibold text-gray-700 hover:text-primary-600 border-b-2 border-transparent whitespace-nowrap" data-tab="amenities">
+                                Amenities
+                            </button>
+                            <button onclick="switchTab('food')" class="tab-button px-6 py-4 font-semibold text-gray-700 hover:text-primary-600 border-b-2 border-transparent whitespace-nowrap" data-tab="food">
+                                Food Schedule
+                            </button>
+                            <button onclick="switchTab('rules')" class="tab-button px-6 py-4 font-semibold text-gray-700 hover:text-primary-600 border-b-2 border-transparent whitespace-nowrap" data-tab="rules">
+                                Rules
+                            </button>
+                            <button onclick="switchTab('contact')" class="tab-button px-6 py-4 font-semibold text-gray-700 hover:text-primary-600 border-b-2 border-transparent whitespace-nowrap" data-tab="contact">
+                                Contact
+                            </button>
+                        </div>
+                        
+                        <div class="p-6">
+                            <!-- Overview Tab -->
+                            <div id="tab-overview" class="tab-content">
+                                <h3 class="text-xl font-semibold mb-4">About This PG</h3>
+                                <p id="pgDescription" class="text-gray-700 mb-6">Loading...</p>
+                                
+                                <div class="grid md:grid-cols-2 gap-4">
+                                    <div class="flex items-center gap-3 p-4 bg-gray-50 rounded-lg">
+                                        <i data-lucide="users" class="w-6 h-6 text-primary-600"></i>
+                                        <div>
+                                            <div class="text-sm text-gray-600">Room Type</div>
+                                            <div id="pgRoomType" class="font-semibold">Loading...</div>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-3 p-4 bg-gray-50 rounded-lg">
+                                        <i data-lucide="utensils" class="w-6 h-6 text-primary-600"></i>
+                                        <div>
+                                            <div class="text-sm text-gray-600">Food Type</div>
+                                            <div id="pgFoodType" class="font-semibold">Loading...</div>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-3 p-4 bg-gray-50 rounded-lg">
+                                        <i data-lucide="calendar" class="w-6 h-6 text-primary-600"></i>
+                                        <div>
+                                            <div class="text-sm text-gray-600">Availability</div>
+                                            <div class="font-semibold text-green-600">Available Now</div>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-3 p-4 bg-gray-50 rounded-lg">
+                                        <i data-lucide="map-pin" class="w-6 h-6 text-primary-600"></i>
+                                        <div>
+                                            <div class="text-sm text-gray-600">Distance</div>
+                                            <div id="pgDistance" class="font-semibold">Loading...</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Amenities Tab -->
+                            <div id="tab-amenities" class="tab-content hidden">
+                                <h3 class="text-xl font-semibold mb-4">Available Amenities</h3>
+                                <div id="amenitiesList" class="grid md:grid-cols-2 gap-4">
+                                    <!-- Amenities will be loaded here -->
+                                </div>
+                            </div>
+
+                            <!-- Food Schedule Tab -->
+                            <div id="tab-food" class="tab-content hidden">
+                                <h3 class="text-xl font-semibold mb-4">Daily Food Schedule</h3>
+                                <div class="space-y-4">
+                                    <div class="flex items-center gap-4 p-4 bg-gray-50 rounded-lg">
+                                        <div class="w-12 h-12 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center">
+                                            <i data-lucide="sunrise" class="w-6 h-6 text-white"></i>
+                                        </div>
+                                        <div class="flex-1">
+                                            <div class="font-semibold">Breakfast</div>
+                                            <div class="text-sm text-gray-600">7:00 AM - 9:00 AM</div>
+                                        </div>
+                                        <div class="text-sm text-gray-700">Poha, Idli, Tea/Coffee</div>
+                                    </div>
+                                    <div class="flex items-center gap-4 p-4 bg-gray-50 rounded-lg">
+                                        <div class="w-12 h-12 bg-gradient-to-br from-orange-400 to-red-500 rounded-full flex items-center justify-center">
+                                            <i data-lucide="sun" class="w-6 h-6 text-white"></i>
+                                        </div>
+                                        <div class="flex-1">
+                                            <div class="font-semibold">Lunch</div>
+                                            <div class="text-sm text-gray-600">12:30 PM - 2:30 PM</div>
+                                        </div>
+                                        <div class="text-sm text-gray-700">Rice, Dal, Roti, Sabzi</div>
+                                    </div>
+                                    <div class="flex items-center gap-4 p-4 bg-gray-50 rounded-lg">
+                                        <div class="w-12 h-12 bg-gradient-to-br from-purple-400 to-indigo-500 rounded-full flex items-center justify-center">
+                                            <i data-lucide="moon" class="w-6 h-6 text-white"></i>
+                                        </div>
+                                        <div class="flex-1">
+                                            <div class="font-semibold">Dinner</div>
+                                            <div class="text-sm text-gray-600">7:30 PM - 9:30 PM</div>
+                                        </div>
+                                        <div class="text-sm text-gray-700">Roti, Rice, Curry, Salad</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Rules Tab -->
+                            <div id="tab-rules" class="tab-content hidden">
+                                <h3 class="text-xl font-semibold mb-4">House Rules</h3>
+                                <ul class="space-y-3">
+                                    <li class="flex items-start gap-3">
+                                        <i data-lucide="check-circle" class="w-5 h-5 text-green-600 mt-0.5"></i>
+                                        <span>No smoking inside the premises</span>
+                                    </li>
+                                    <li class="flex items-start gap-3">
+                                        <i data-lucide="check-circle" class="w-5 h-5 text-green-600 mt-0.5"></i>
+                                        <span>Visitors allowed till 9:00 PM</span>
+                                    </li>
+                                    <li class="flex items-start gap-3">
+                                        <i data-lucide="check-circle" class="w-5 h-5 text-green-600 mt-0.5"></i>
+                                        <span>Maintain cleanliness in common areas</span>
+                                    </li>
+                                    <li class="flex items-start gap-3">
+                                        <i data-lucide="check-circle" class="w-5 h-5 text-green-600 mt-0.5"></i>
+                                        <span>One month notice period required</span>
+                                    </li>
+                                    <li class="flex items-start gap-3">
+                                        <i data-lucide="x-circle" class="w-5 h-5 text-red-600 mt-0.5"></i>
+                                        <span>Pets not allowed</span>
+                                    </li>
+                                    <li class="flex items-start gap-3">
+                                        <i data-lucide="x-circle" class="w-5 h-5 text-red-600 mt-0.5"></i>
+                                        <span>No loud music after 10:00 PM</span>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <!-- Contact Tab -->
+                            <div id="tab-contact" class="tab-content hidden">
+                                <h3 class="text-xl font-semibold mb-4">Contact Owner</h3>
+                                <div class="space-y-4">
+                                    <div class="flex items-center gap-4 p-4 bg-gray-50 rounded-lg">
+                                        <i data-lucide="user" class="w-6 h-6 text-primary-600"></i>
+                                        <div>
+                                            <div class="text-sm text-gray-600">Owner Name</div>
+                                            <div class="font-semibold">Rajesh Kumar</div>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-4 p-4 bg-gray-50 rounded-lg">
+                                        <i data-lucide="phone" class="w-6 h-6 text-primary-600"></i>
+                                        <div class="flex-1">
+                                            <div class="text-sm text-gray-600">Phone Number</div>
+                                            <div class="font-semibold">+91 98765 43210</div>
+                                        </div>
+                                        <button onclick="callOwner()" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-all">
+                                            <i data-lucide="phone" class="w-4 h-4 inline mr-1"></i> Call
+                                        </button>
+                                    </div>
+                                    <div class="flex items-center gap-4 p-4 bg-gray-50 rounded-lg">
+                                        <i data-lucide="mail" class="w-6 h-6 text-primary-600"></i>
+                                        <div>
+                                            <div class="text-sm text-gray-600">Email</div>
+                                            <div class="font-semibold">rajesh@example.com</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Reviews Section -->
+                    <div class="bg-white rounded-2xl p-6 shadow-md">
+                        <h3 class="text-2xl font-semibold mb-6">Reviews & Ratings</h3>
+                        
+                        <!-- Rating Overview -->
+                        <div class="grid md:grid-cols-2 gap-6 mb-8">
+                            <div class="text-center p-6 bg-gradient-to-br from-primary-50 to-violet-50 rounded-xl">
+                                <div class="text-5xl font-bold text-primary-600 mb-2">4.5</div>
+                                <div class="flex items-center justify-center mb-2">
+                                    <i data-lucide="star" class="w-5 h-5 text-yellow-500 fill-yellow-500"></i>
+                                    <i data-lucide="star" class="w-5 h-5 text-yellow-500 fill-yellow-500"></i>
+                                    <i data-lucide="star" class="w-5 h-5 text-yellow-500 fill-yellow-500"></i>
+                                    <i data-lucide="star" class="w-5 h-5 text-yellow-500 fill-yellow-500"></i>
+                                    <i data-lucide="star" class="w-5 h-5 text-gray-300"></i>
+                                </div>
+                                <div class="text-gray-600">Based on 120 reviews</div>
+                            </div>
+                            
+                            <div class="space-y-2">
+                                <div class="flex items-center gap-3">
+                                    <span class="text-sm w-8">5★</span>
+                                    <div class="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
+                                        <div class="h-full bg-yellow-500" style="width: 70%"></div>
+                                    </div>
+                                    <span class="text-sm text-gray-600 w-12">70%</span>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <span class="text-sm w-8">4★</span>
+                                    <div class="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
+                                        <div class="h-full bg-yellow-500" style="width: 20%"></div>
+                                    </div>
+                                    <span class="text-sm text-gray-600 w-12">20%</span>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <span class="text-sm w-8">3★</span>
+                                    <div class="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
+                                        <div class="h-full bg-yellow-500" style="width: 7%"></div>
+                                    </div>
+                                    <span class="text-sm text-gray-600 w-12">7%</span>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <span class="text-sm w-8">2★</span>
+                                    <div class="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
+                                        <div class="h-full bg-yellow-500" style="width: 2%"></div>
+                                    </div>
+                                    <span class="text-sm text-gray-600 w-12">2%</span>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <span class="text-sm w-8">1★</span>
+                                    <div class="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
+                                        <div class="h-full bg-yellow-500" style="width: 1%"></div>
+                                    </div>
+                                    <span class="text-sm text-gray-600 w-12">1%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Individual Reviews -->
+                        <div id="reviewsList" class="space-y-4">
+                            <!-- Reviews will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column - Booking Card -->
+                <div class="lg:col-span-1">
+                    <div class="bg-white rounded-2xl p-6 shadow-lg sticky top-24">
+                        <div class="text-3xl font-bold text-primary-600 mb-4">
+                            ₹<span id="bookingRent">0</span><span class="text-lg text-gray-500 font-normal">/month</span>
+                        </div>
+                        
+                        <div class="space-y-4 mb-6">
+                            <div class="flex items-center justify-between text-sm">
+                                <span class="text-gray-600">Security Deposit</span>
+                                <span class="font-semibold">₹<span id="securityDeposit">0</span></span>
+                            </div>
+                            <div class="flex items-center justify-between text-sm">
+                                <span class="text-gray-600">Maintenance</span>
+                                <span class="font-semibold">Included</span>
+                            </div>
+                        </div>
+                        
+                        <button onclick="bookThisPG()" class="w-full px-6 py-4 bg-gradient-to-r from-primary-600 to-violet-600 text-white rounded-xl font-semibold text-lg hover:shadow-2xl hover:scale-105 transition-all duration-300 ripple mb-4">
+                            <i data-lucide="zap" class="w-5 h-5 inline mr-2"></i>
+                            Book Instantly
+                        </button>
+                        
+                        <button onclick="scheduleVisit()" class="w-full px-6 py-3 bg-white text-primary-600 border-2 border-primary-600 rounded-xl font-semibold hover:bg-primary-50 transition-all">
+                            Schedule Visit
+                        </button>
+                        
+                        <div class="mt-6 pt-6 border-t">
+                            <div class="text-sm text-gray-600 text-center">
+                                <i data-lucide="shield-check" class="w-4 h-4 inline text-green-600"></i>
+                                100% Safe & Secure Booking
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/detail.js"></script>
+    <script>lucide.createIcons();</script>
+</body>
+</html>

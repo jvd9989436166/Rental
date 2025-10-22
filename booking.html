@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book PG - RentalMate</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="font-sans antialiased bg-gray-50">
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-white shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-2">
+                    <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                        <i data-lucide="home" class="w-6 h-6 text-white"></i>
+                    </div>
+                    <span class="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">RentalMate</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="pt-24 pb-12">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="mb-12">
+                <div class="flex items-center justify-between">
+                    <div class="flex-1">
+                        <div class="flex items-center">
+                            <div id="step1Circle" class="w-12 h-12 bg-gradient-to-br from-blue-600 to-purple-600 rounded-full flex items-center justify-center text-white font-bold shadow-lg">1</div>
+                            <div class="flex-1 h-1 bg-gray-300 mx-2"><div id="step1Line" class="h-full bg-gradient-to-r from-blue-600 to-purple-600 w-0 transition-all duration-500"></div></div>
+                        </div>
+                        <div class="mt-2 text-sm font-semibold text-blue-600">Select Duration</div>
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex items-center">
+                            <div id="step2Circle" class="w-12 h-12 bg-gray-300 rounded-full flex items-center justify-center text-white font-bold">2</div>
+                            <div class="flex-1 h-1 bg-gray-300 mx-2"><div id="step2Line" class="h-full bg-gradient-to-r from-blue-600 to-purple-600 w-0 transition-all duration-500"></div></div>
+                        </div>
+                        <div class="mt-2 text-sm text-gray-600">Review</div>
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex items-center">
+                            <div id="step3Circle" class="w-12 h-12 bg-gray-300 rounded-full flex items-center justify-center text-white font-bold">3</div>
+                            <div class="flex-1 h-1 bg-gray-300 mx-2"><div id="step3Line" class="h-full bg-gradient-to-r from-blue-600 to-purple-600 w-0 transition-all duration-500"></div></div>
+                        </div>
+                        <div class="mt-2 text-sm text-gray-600">Payment</div>
+                    </div>
+                    <div>
+                        <div id="step4Circle" class="w-12 h-12 bg-gray-300 rounded-full flex items-center justify-center text-white font-bold">4</div>
+                        <div class="mt-2 text-sm text-gray-600">Confirm</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid lg:grid-cols-3 gap-8">
+                <div class="lg:col-span-2">
+                    <div id="step1" class="bg-white rounded-2xl p-8 shadow-lg mb-6">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-6">Select Booking Duration</h2>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Move-in Date</label>
+                                <input type="date" id="moveInDate" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Duration (Months)</label>
+                                <select id="duration" onchange="calculateRent()" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                    <option value="1">1 Month</option>
+                                    <option value="3">3 Months</option>
+                                    <option value="6" selected>6 Months</option>
+                                    <option value="12">12 Months</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button onclick="nextStep(2)" class="mt-6 w-full px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-semibold hover:shadow-lg transition-all">Continue</button>
+                    </div>
+
+                    <div id="step2" class="bg-white rounded-2xl p-8 shadow-lg mb-6 hidden">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-6">Review Details</h2>
+                        <div class="space-y-4 mb-6">
+                            <div class="flex justify-between"><span class="text-gray-600">Move-in Date</span><span id="reviewMoveInDate" class="font-semibold">-</span></div>
+                            <div class="flex justify-between"><span class="text-gray-600">Duration</span><span id="reviewDuration" class="font-semibold">-</span></div>
+                        </div>
+                        <div class="flex gap-4">
+                            <button onclick="prevStep(1)" class="flex-1 px-6 py-3 bg-gray-200 text-gray-700 rounded-lg font-semibold">Back</button>
+                            <button onclick="nextStep(3)" class="flex-1 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-semibold">Continue</button>
+                        </div>
+                    </div>
+
+                    <div id="step3" class="bg-white rounded-2xl p-8 shadow-lg mb-6 hidden">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-6">Payment</h2>
+                        <div class="flex gap-4">
+                            <button onclick="prevStep(2)" class="flex-1 px-6 py-3 bg-gray-200 text-gray-700 rounded-lg font-semibold">Back</button>
+                            <button onclick="processPayment()" class="flex-1 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-semibold ripple">Pay Now</button>
+                        </div>
+                    </div>
+
+                    <div id="step4" class="bg-white rounded-2xl p-8 shadow-lg mb-6 hidden text-center">
+                        <div class="w-24 h-24 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <i data-lucide="check" class="w-12 h-12 text-white"></i>
+                        </div>
+                        <h2 class="text-3xl font-bold text-gray-900 mb-4">Booking Confirmed! 🎉</h2>
+                        <button onclick="window.location.href='tenant-dashboard.html'" class="px-8 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-semibold">Go to Dashboard</button>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-1">
+                    <div class="bg-white rounded-2xl p-6 shadow-lg sticky top-24">
+                        <h3 class="text-xl font-bold text-gray-900 mb-4">Price Summary</h3>
+                        <div class="space-y-3 mb-4 pb-4 border-b">
+                            <div class="flex justify-between"><span class="text-gray-600">Monthly Rent</span><span class="font-semibold">₹<span id="summaryMonthlyRent">7500</span></span></div>
+                            <div class="flex justify-between"><span class="text-gray-600">Duration</span><span class="font-semibold"><span id="summaryDuration">6</span> months</span></div>
+                            <div class="flex justify-between"><span class="text-gray-600">Security Deposit</span><span class="font-semibold">₹<span id="summaryDeposit">15000</span></span></div>
+                        </div>
+                        <div class="flex justify-between text-xl font-bold"><span>Total</span><span class="text-blue-600">₹<span id="summaryTotal">60000</span></span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/booking.js"></script>
+    <script>lucide.createIcons();</script>
+</body>
+</html>

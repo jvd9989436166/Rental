@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authentication Test | RentalMate</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: { 500: '#0ea5e9', 600: '#0284c7', 700: '#0369a1' },
+                        violet: { 500: '#a855f7', 600: '#9333ea', 700: '#7e22ce' }
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="font-sans antialiased bg-gray-50">
+    <div class="min-h-screen flex items-center justify-center px-4">
+        <div class="max-w-md w-full bg-white rounded-2xl shadow-xl p-8">
+            <h1 class="text-3xl font-bold text-center text-gray-900 mb-8">Authentication Test</h1>
+            
+            <!-- Test Login -->
+            <div class="mb-8">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4">Test Login</h2>
+                <form id="testLoginForm" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                        <input type="email" id="testEmail" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent" placeholder="test@example.com">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                        <input type="password" id="testPassword" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent" placeholder="••••••••">
+                    </div>
+                    <button type="submit" class="w-full px-6 py-3 bg-gradient-to-r from-primary-600 to-violet-600 text-white rounded-lg font-semibold hover:shadow-lg transition-all duration-300">
+                        Test Login
+                    </button>
+                </form>
+            </div>
+
+            <!-- Test Signup -->
+            <div class="mb-8">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4">Test Signup</h2>
+                <form id="testSignupForm" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Name</label>
+                        <input type="text" id="testName" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent" placeholder="John Doe">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                        <input type="email" id="testSignupEmail" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent" placeholder="test@example.com">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Phone</label>
+                        <input type="tel" id="testPhone" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent" placeholder="9876543210">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                        <input type="password" id="testSignupPassword" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent" placeholder="••••••••">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Role</label>
+                        <select id="testRole" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                            <option value="tenant">Tenant</option>
+                            <option value="owner">Owner</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="w-full px-6 py-3 bg-gradient-to-r from-violet-600 to-primary-600 text-white rounded-lg font-semibold hover:shadow-lg transition-all duration-300">
+                        Test Signup
+                    </button>
+                </form>
+            </div>
+
+            <!-- Test Results -->
+            <div id="testResults" class="hidden">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">Test Results</h3>
+                <div id="resultContent" class="bg-gray-50 rounded-lg p-4 text-sm font-mono"></div>
+            </div>
+
+            <!-- Back to Home -->
+            <div class="text-center mt-8">
+                <a href="index.html" class="text-primary-600 hover:text-primary-700 font-medium">← Back to Home</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Test Login
+        document.getElementById('testLoginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('testEmail').value;
+            const password = document.getElementById('testPassword').value;
+            
+            try {
+                const response = await fetch('http://localhost:5000/api/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({ email, password })
+                });
+                
+                const data = await response.json();
+                showResult('Login Test', response.status, data);
+            } catch (error) {
+                showResult('Login Test', 'Error', { error: error.message });
+            }
+        });
+
+        // Test Signup
+        document.getElementById('testSignupForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const name = document.getElementById('testName').value;
+            const email = document.getElementById('testSignupEmail').value;
+            const phone = document.getElementById('testPhone').value;
+            const password = document.getElementById('testSignupPassword').value;
+            const role = document.getElementById('testRole').value;
+            
+            try {
+                const response = await fetch('http://localhost:5000/api/auth/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({ name, email, phone, password, role })
+                });
+                
+                const data = await response.json();
+                showResult('Signup Test', response.status, data);
+            } catch (error) {
+                showResult('Signup Test', 'Error', { error: error.message });
+            }
+        });
+
+        function showResult(testName, status, data) {
+            const resultsDiv = document.getElementById('testResults');
+            const contentDiv = document.getElementById('resultContent');
+            
+            resultsDiv.classList.remove('hidden');
+            contentDiv.innerHTML = `
+                <div class="mb-2"><strong>Test:</strong> ${testName}</div>
+                <div class="mb-2"><strong>Status:</strong> ${status}</div>
+                <div class="mb-2"><strong>Response:</strong></div>
+                <pre class="bg-white p-2 rounded border text-xs overflow-auto">${JSON.stringify(data, null, 2)}</pre>
+            `;
+        }
+
+        // Initialize Lucide icons
+        lucide.createIcons();
+    </script>
+</body>
+</html>
+
+

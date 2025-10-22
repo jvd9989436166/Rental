@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Page Not Found | RentalMate</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: { 500: '#0ea5e9', 600: '#0284c7', 700: '#0369a1' },
+                        violet: { 500: '#a855f7', 600: '#9333ea', 700: '#7e22ce' }
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="font-sans antialiased">
+    <div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center px-4 sm:px-6 lg:px-8">
+        <div class="max-w-md w-full text-center">
+            <!-- 404 Animation -->
+            <div class="mb-8">
+                <div class="text-8xl sm:text-9xl font-bold text-primary-500 mb-4 animate-float">
+                    404
+                </div>
+                <div class="text-6xl mb-4 animate-float" style="animation-delay: 0.5s;">
+                    🏠
+                </div>
+            </div>
+
+            <!-- Error Message -->
+            <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4 fade-in">
+                Page Not Found
+            </h1>
+            
+            <p class="text-gray-600 mb-8 text-sm sm:text-base fade-in" style="animation-delay: 0.2s;">
+                The page you're looking for doesn't exist or has been moved.
+            </p>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-col sm:flex-row gap-4 justify-center fade-in" style="animation-delay: 0.3s;">
+                <button onclick="history.back()" class="btn-outline flex items-center justify-center gap-2 px-6 py-3">
+                    <i data-lucide="arrow-left" class="w-5 h-5"></i>
+                    Go Back
+                </button>
+                
+                <a href="index.html" class="btn-primary flex items-center justify-center gap-2 px-6 py-3">
+                    <i data-lucide="home" class="w-5 h-5"></i>
+                    Go Home
+                </a>
+            </div>
+
+            <!-- Quick Links -->
+            <div class="mt-8 pt-8 border-t border-gray-200 fade-in" style="animation-delay: 0.4s;">
+                <p class="text-sm text-gray-500 mb-4">Quick Links:</p>
+                <div class="flex flex-wrap justify-center gap-4 text-sm">
+                    <a href="home.html" class="text-primary-500 hover:text-primary-600 hover:underline">
+                        Explore PGs
+                    </a>
+                    <a href="index.html#login" class="text-primary-500 hover:text-primary-600 hover:underline">
+                        Login
+                    </a>
+                    <a href="index.html#contact" class="text-primary-500 hover:text-primary-600 hover:underline">
+                        Contact
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+        
+        // Add some interactive effects
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add hover effects to buttons
+            const buttons = document.querySelectorAll('button, a');
+            buttons.forEach(button => {
+                button.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-2px)';
+                });
+                
+                button.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>
+
+

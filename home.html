@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explore PGs - RentalMate</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: { 500: '#0ea5e9', 600: '#0284c7', 700: '#0369a1' },
+                        violet: { 500: '#a855f7', 600: '#9333ea', 700: '#7e22ce' }
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="font-sans antialiased bg-gray-50">
+    
+    <!-- Navbar -->
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-white shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-2">
+                    <div class="w-10 h-10 bg-gradient-to-br from-primary-500 to-violet-600 rounded-lg flex items-center justify-center">
+                        <i data-lucide="home" class="w-6 h-6 text-white"></i>
+                    </div>
+                    <span class="text-2xl font-bold bg-gradient-to-r from-primary-600 to-violet-600 bg-clip-text text-transparent">RentalMate</span>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button onclick="window.location.href='tenant-dashboard.html'" class="hidden sm:block px-4 py-2 text-gray-700 hover:text-primary-600 font-medium transition-colors">
+                        <i data-lucide="layout-dashboard" class="w-5 h-5 inline mr-1"></i> Dashboard
+                    </button>
+                    <button onclick="logout()" class="px-4 py-2 text-gray-700 hover:text-red-600 font-medium transition-colors">
+                        <i data-lucide="log-out" class="w-5 h-5 inline"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Search Section -->
+    <section class="pt-24 pb-8 bg-gradient-to-br from-primary-50 to-violet-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h1 class="text-4xl font-bold text-gray-900 mb-6 text-center">Find Your Perfect PG</h1>
+            
+            <!-- Search Bar -->
+            <div class="max-w-4xl mx-auto mb-6">
+                <div class="relative">
+                    <input type="text" id="smartSearch" placeholder='Try "PGs under ₹8000 near IT Park" or "2 sharing with WiFi"' class="w-full px-6 py-4 pr-32 rounded-xl border-2 border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition-all text-lg">
+                    <button onclick="performSmartSearch()" class="absolute right-2 top-2 px-6 py-2 bg-gradient-to-r from-primary-600 to-violet-600 text-white rounded-lg font-semibold hover:shadow-lg transition-all">
+                        <i data-lucide="search" class="w-5 h-5 inline"></i> Search
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Quick Filters -->
+            <div class="flex flex-wrap gap-3 justify-center">
+                <button onclick="applyQuickFilter('budget', '5000')" class="px-4 py-2 bg-white rounded-full border border-gray-200 hover:border-primary-500 hover:bg-primary-50 transition-all">
+                    Under ₹5000
+                </button>
+                <button onclick="applyQuickFilter('budget', '8000')" class="px-4 py-2 bg-white rounded-full border border-gray-200 hover:border-primary-500 hover:bg-primary-50 transition-all">
+                    Under ₹8000
+                </button>
+                <button onclick="applyQuickFilter('roomType', 'single')" class="px-4 py-2 bg-white rounded-full border border-gray-200 hover:border-primary-500 hover:bg-primary-50 transition-all">
+                    Single Room
+                </button>
+                <button onclick="applyQuickFilter('amenity', 'wifi')" class="px-4 py-2 bg-white rounded-full border border-gray-200 hover:border-primary-500 hover:bg-primary-50 transition-all">
+                    WiFi
+                </button>
+                <button onclick="applyQuickFilter('food', 'included')" class="px-4 py-2 bg-white rounded-full border border-gray-200 hover:border-primary-500 hover:bg-primary-50 transition-all">
+                    Food Included
+                </button>
+                <button onclick="toggleFilters()" class="px-4 py-2 bg-primary-600 text-white rounded-full hover:bg-primary-700 transition-all">
+                    <i data-lucide="sliders-horizontal" class="w-4 h-4 inline mr-1"></i> More Filters
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Advanced Filters Panel -->
+    <div id="filterPanel" class="filter-panel collapsed bg-white border-b shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="grid md:grid-cols-4 gap-6">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Location</label>
+                    <input type="text" id="filterLocation" placeholder="Enter location" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Budget (₹/month)</label>
+                    <select id="filterBudget" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500">
+                        <option value="">Any</option>
+                        <option value="5000">Under ₹5000</option>
+                        <option value="8000">Under ₹8000</option>
+                        <option value="10000">Under ₹10000</option>
+                        <option value="15000">Under ₹15000</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Room Type</label>
+                    <select id="filterRoomType" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500">
+                        <option value="">Any</option>
+                        <option value="single">Single</option>
+                        <option value="double">Double Sharing</option>
+                        <option value="triple">Triple Sharing</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Food Type</label>
+                    <select id="filterFoodType" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500">
+                        <option value="">Any</option>
+                        <option value="veg">Veg</option>
+                        <option value="nonveg">Non-Veg</option>
+                        <option value="both">Both</option>
+                    </select>
+                </div>
+            </div>
+            <div class="mt-4 flex gap-3">
+                <button onclick="applyFilters()" class="px-6 py-2 bg-gradient-to-r from-primary-600 to-violet-600 text-white rounded-lg font-semibold hover:shadow-lg transition-all">
+                    Apply Filters
+                </button>
+                <button onclick="resetFilters()" class="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg font-semibold hover:bg-gray-300 transition-all">
+                    Reset
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Top Rated Carousel -->
+    <section class="py-12 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-3xl font-bold text-gray-900">Top Rated PGs</h2>
+                <div class="flex gap-2">
+                    <button onclick="slideCarousel('prev')" class="p-2 bg-gray-100 rounded-full hover:bg-gray-200 transition-all">
+                        <i data-lucide="chevron-left" class="w-6 h-6"></i>
+                    </button>
+                    <button onclick="slideCarousel('next')" class="p-2 bg-gray-100 rounded-full hover:bg-gray-200 transition-all">
+                        <i data-lucide="chevron-right" class="w-6 h-6"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="carousel-container overflow-hidden">
+                <div id="topRatedCarousel" class="carousel-track flex gap-6">
+                    <!-- Carousel items will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PG Listings Grid -->
+    <section class="py-12 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-3xl font-bold text-gray-900">All PGs <span id="resultCount" class="text-lg text-gray-600"></span></h2>
+                <select id="sortBy" onchange="sortListings()" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500">
+                    <option value="relevance">Sort by: Relevance</option>
+                    <option value="price-low">Price: Low to High</option>
+                    <option value="price-high">Price: High to Low</option>
+                    <option value="rating">Rating</option>
+                    <option value="distance">Distance</option>
+                </select>
+            </div>
+            
+            <div id="pgListings" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- PG cards will be loaded here -->
+            </div>
+            
+            <!-- Load More Button -->
+            <div class="text-center mt-8">
+                <button onclick="loadMorePGs()" id="loadMoreBtn" class="px-8 py-3 bg-gradient-to-r from-primary-600 to-violet-600 text-white rounded-lg font-semibold hover:shadow-lg hover:scale-105 transition-all">
+                    Load More
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Floating Book Now Button (Mobile) -->
+    <button class="fixed bottom-6 right-6 lg:hidden w-14 h-14 bg-gradient-to-r from-primary-600 to-violet-600 text-white rounded-full shadow-lg flex items-center justify-center hover:scale-110 transition-all z-40">
+        <i data-lucide="plus" class="w-6 h-6"></i>
+    </button>
+
+    <script src="js/auth.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/search.js"></script>
+    <script>lucide.createIcons();</script>
+</body>
+</html>

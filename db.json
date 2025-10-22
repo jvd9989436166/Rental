@@ -1,0 +1,116 @@
+{
+  "pgs": [
+    {
+      "id": 1,
+      "name": "Sunshine PG",
+      "location": "Koramangala, Bangalore",
+      "rent": 7500,
+      "rating": 4.5,
+      "reviews": 120,
+      "distance": 2.3,
+      "roomType": "double",
+      "foodType": "veg",
+      "image": "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400",
+      "amenities": ["WiFi", "AC", "Laundry", "Parking"],
+      "verified": true,
+      "featured": true,
+      "description": "Welcome to Sunshine PG, a premium accommodation facility in the heart of Koramangala.",
+      "securityDeposit": 15000,
+      "ownerId": "owner1"
+    },
+    {
+      "id": 2,
+      "name": "Green Valley Residency",
+      "location": "HSR Layout, Bangalore",
+      "rent": 6000,
+      "rating": 4.2,
+      "reviews": 85,
+      "distance": 3.1,
+      "roomType": "triple",
+      "foodType": "both",
+      "image": "https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=400",
+      "amenities": ["WiFi", "Gym", "Food", "Security"],
+      "verified": true,
+      "featured": true,
+      "description": "Comfortable living spaces with modern amenities in HSR Layout.",
+      "securityDeposit": 12000,
+      "ownerId": "owner2"
+    },
+    {
+      "id": 3,
+      "name": "Royal Stay PG",
+      "location": "Indiranagar, Bangalore",
+      "rent": 9500,
+      "rating": 4.7,
+      "reviews": 200,
+      "distance": 1.5,
+      "roomType": "single",
+      "foodType": "veg",
+      "image": "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=400",
+      "amenities": ["WiFi", "AC", "Food", "Laundry", "Parking"],
+      "verified": true,
+      "featured": true,
+      "description": "Premium single rooms with all modern facilities in Indiranagar.",
+      "securityDeposit": 19000,
+      "ownerId": "owner1"
+    }
+  ],
+  "bookings": [
+    {
+      "id": "BK1001",
+      "pgId": 1,
+      "userId": "user1",
+      "moveInDate": "2024-01-15",
+      "duration": 6,
+      "monthlyRent": 7500,
+      "totalAmount": 60000,
+      "status": "confirmed",
+      "bookingDate": "2024-01-01"
+    }
+  ],
+  "users": [
+    {
+      "id": "user1",
+      "name": "John Doe",
+      "email": "john@example.com",
+      "role": "tenant",
+      "phone": "+919876543210"
+    },
+    {
+      "id": "owner1",
+      "name": "Rajesh Kumar",
+      "email": "rajesh@example.com",
+      "role": "owner",
+      "phone": "+919876543211"
+    }
+  ],
+  "reviews": [
+    {
+      "id": 1,
+      "pgId": 1,
+      "userId": "user1",
+      "rating": 5,
+      "comment": "Excellent PG with all amenities. Highly recommended!",
+      "date": "2024-01-15"
+    },
+    {
+      "id": 2,
+      "pgId": 1,
+      "userId": "user2",
+      "rating": 4,
+      "comment": "Good place to stay. Clean rooms and decent food.",
+      "date": "2024-01-10"
+    }
+  ],
+  "maintenanceRequests": [
+    {
+      "id": 1,
+      "bookingId": "BK1001",
+      "userId": "user1",
+      "pgId": 1,
+      "issue": "AC not working",
+      "status": "pending",
+      "date": "2024-01-20"
+    }
+  ]
+}

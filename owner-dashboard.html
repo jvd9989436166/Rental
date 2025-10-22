@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Owner Dashboard - RentalMate</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="font-sans antialiased bg-gray-50">
+    
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-white shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-2">
+                    <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                        <i data-lucide="home" class="w-6 h-6 text-white"></i>
+                    </div>
+                    <span class="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">RentalMate</span>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button onclick="logout()" class="px-4 py-2 text-gray-700 hover:text-red-600 font-medium">
+                        <i data-lucide="log-out" class="w-5 h-5 inline"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="pt-20 pb-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <div class="mb-8">
+                <h1 class="text-3xl font-bold text-gray-900 mb-2">Owner Dashboard</h1>
+                <p class="text-gray-600">Manage your PG listings and bookings</p>
+            </div>
+
+            <div class="grid lg:grid-cols-4 gap-6 mb-8">
+                <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl p-6 text-white">
+                    <div class="flex items-center justify-between mb-4">
+                        <i data-lucide="building" class="w-8 h-8"></i>
+                        <span class="text-3xl font-bold">3</span>
+                    </div>
+                    <div class="text-sm opacity-90">Total Properties</div>
+                </div>
+                
+                <div class="bg-gradient-to-br from-green-500 to-green-600 rounded-2xl p-6 text-white">
+                    <div class="flex items-center justify-between mb-4">
+                        <i data-lucide="users" class="w-8 h-8"></i>
+                        <span class="text-3xl font-bold">12</span>
+                    </div>
+                    <div class="text-sm opacity-90">Active Tenants</div>
+                </div>
+                
+                <div class="bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl p-6 text-white">
+                    <div class="flex items-center justify-between mb-4">
+                        <i data-lucide="indian-rupee" class="w-8 h-8"></i>
+                        <span class="text-3xl font-bold">₹90K</span>
+                    </div>
+                    <div class="text-sm opacity-90">Monthly Revenue</div>
+                </div>
+                
+                <div class="bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl p-6 text-white">
+                    <div class="flex items-center justify-between mb-4">
+                        <i data-lucide="star" class="w-8 h-8"></i>
+                        <span class="text-3xl font-bold">4.5</span>
+                    </div>
+                    <div class="text-sm opacity-90">Average Rating</div>
+                </div>
+            </div>
+
+            <div class="grid lg:grid-cols-3 gap-8">
+                <div class="lg:col-span-2 space-y-6">
+                    
+                    <div class="bg-white rounded-2xl p-6 shadow-md">
+                        <div class="flex items-center justify-between mb-6">
+                            <h2 class="text-2xl font-bold text-gray-900">My Properties</h2>
+                            <button onclick="openAddPGModal()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all">
+                                <i data-lucide="plus" class="w-4 h-4 inline mr-1"></i> Add New PG
+                            </button>
+                        </div>
+                        
+                        <div class="space-y-4">
+                            <div class="border border-gray-200 rounded-xl p-4 hover:shadow-md transition-all">
+                                <div class="flex items-start gap-4">
+                                    <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=200" alt="PG" class="w-24 h-24 object-cover rounded-lg">
+                                    <div class="flex-1">
+                                        <div class="flex items-start justify-between mb-2">
+                                            <div>
+                                                <h3 class="font-semibold text-lg">Sunshine PG</h3>
+                                                <p class="text-sm text-gray-600">Koramangala, Bangalore</p>
+                                            </div>
+                                            <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-semibold">Active</span>
+                                        </div>
+                                        <div class="grid grid-cols-3 gap-4 text-sm mb-3">
+                                            <div><span class="text-gray-600">Occupancy:</span> <span class="font-semibold">8/10</span></div>
+                                            <div><span class="text-gray-600">Rent:</span> <span class="font-semibold">₹7,500</span></div>
+                                            <div><span class="text-gray-600">Rating:</span> <span class="font-semibold">4.5 ⭐</span></div>
+                                        </div>
+                                        <div class="flex gap-2">
+                                            <button onclick="editPG(1)" class="px-4 py-2 bg-blue-100 text-blue-700 rounded-lg text-sm hover:bg-blue-200 transition-all">Edit</button>
+                                            <button onclick="viewBookings(1)" class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm hover:bg-gray-200 transition-all">View Bookings</button>
+                                            <button onclick="viewReviews(1)" class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm hover:bg-gray-200 transition-all">Reviews</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl p-6 shadow-md">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-6">Revenue Analytics</h2>
+                        <div class="h-64">
+                            <canvas id="revenueChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl p-6 shadow-md">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-6">Recent Bookings</h2>
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center font-semibold text-blue-600">
+                                        PS
+                                    </div>
+                                    <div>
+                                        <div class="font-semibold">Priya Sharma</div>
+                                        <div class="text-sm text-gray-600">Sunshine PG - Room 101</div>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="font-semibold text-green-600">₹7,500</div>
+                                    <div class="text-sm text-gray-600">Jan 15, 2024</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-6">
+                    <div class="bg-white rounded-2xl p-6 shadow-md">
+                        <h3 class="text-xl font-bold text-gray-900 mb-4">Occupancy Rate</h3>
+                        <div class="relative pt-1">
+                            <div class="flex mb-2 items-center justify-between">
+                                <div><span class="text-xs font-semibold inline-block text-blue-600">80%</span></div>
+                            </div>
+                            <div class="overflow-hidden h-4 mb-4 text-xs flex rounded-full bg-blue-100">
+                                <div style="width:80%" class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-gradient-to-r from-blue-500 to-purple-600"></div>
+                            </div>
+                        </div>
+                        <p class="text-sm text-gray-600">24 out of 30 rooms occupied</p>
+                    </div>
+
+                    <div class="bg-white rounded-2xl p-6 shadow-md">
+                        <h3 class="text-xl font-bold text-gray-900 mb-4">Pending Actions</h3>
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between p-3 bg-yellow-50 rounded-lg">
+                                <div class="flex items-center gap-2">
+                                    <i data-lucide="alert-circle" class="w-5 h-5 text-yellow-600"></i>
+                                    <span class="text-sm">Maintenance Requests</span>
+                                </div>
+                                <span class="font-semibold text-yellow-600">2</span>
+                            </div>
+                            <div class="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
+                                <div class="flex items-center gap-2">
+                                    <i data-lucide="message-square" class="w-5 h-5 text-blue-600"></i>
+                                    <span class="text-sm">New Messages</span>
+                                </div>
+                                <span class="font-semibold text-blue-600">5</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl p-6 border border-blue-100">
+                        <h3 class="text-lg font-bold text-gray-900 mb-2">Boost Your Listing</h3>
+                        <p class="text-sm text-gray-600 mb-4">Get more visibility with premium features</p>
+                        <button class="w-full px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-semibold hover:shadow-lg transition-all">
+                            Upgrade Now
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/dashboard.js"></script>
+    <script>
+        lucide.createIcons();
+        
+        // Revenue Chart
+        const ctx = document.getElementById('revenueChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                datasets: [{
+                    label: 'Revenue',
+                    data: [65000, 72000, 68000, 85000, 90000, 95000],
+                    borderColor: 'rgb(59, 130, 246)',
+                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
