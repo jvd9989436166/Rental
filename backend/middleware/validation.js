@@ -1,6 +1,25 @@
 import { body, param, query, validationResult } from 'express-validator';
 import mongoose from 'mongoose';
 
+// Middleware to parse JSON strings from multipart form data
+export const parseMultipartData = (req, res, next) => {
+  // Parse JSON strings for nested objects
+  const fieldsToParse = ['location', 'roomTypes', 'contactInfo', 'foodSchedule', 'amenities', 'nearbyColleges'];
+  
+  fieldsToParse.forEach(field => {
+    if (req.body[field] && typeof req.body[field] === 'string') {
+      try {
+        req.body[field] = JSON.parse(req.body[field]);
+      } catch (error) {
+        console.error(`Error parsing ${field}:`, error);
+        // Keep the original value if parsing fails
+      }
+    }
+  });
+  
+  next();
+};
+
 // Validation result checker
 export const validate = (req, res, next) => {
   const errors = validationResult(req);
@@ -44,6 +63,11 @@ export const createPGValidation = [
   body('location.state').trim().notEmpty().withMessage('State is required'),
   body('location.pincode').matches(/^[0-9]{6}$/).withMessage('Please provide valid 6-digit pincode'),
   body('roomTypes').isArray({ min: 1 }).withMessage('At least one room type is required'),
+  body('roomTypes.*.type').isIn(['single', 'double', 'triple', 'sharing']).withMessage('Invalid room type'),
+  body('roomTypes.*.price').isFloat({ min: 0 }).withMessage('Price must be a positive number'),
+  body('roomTypes.*.available').isInt({ min: 0 }).withMessage('Available rooms must be a non-negative integer'),
+  body('roomTypes.*.total').isInt({ min: 1 }).withMessage('Total rooms must be a positive integer'),
+  body('roomTypes.*.deposit').isFloat({ min: 0 }).withMessage('Deposit must be a positive number'),
   body('foodType').isIn(['veg', 'non-veg', 'both', 'none']).withMessage('Invalid food type'),
   body('contactInfo.phone').matches(/^[0-9]{10}$/).withMessage('Please provide valid phone number')
 ];

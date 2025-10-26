@@ -1,7 +1,7 @@
 {
   "name": "rentalmate-backend",
   "version": "1.0.0",
-  "description": "RentalMate Backend API with MongoDB, JWT, Cloudinary, Razorpay",
+  "description": "RentalMate Backend API with MongoDB, JWT, Local Storage, Razorpay",
   "main": "server.js",
   "type": "module",
   "scripts": {
@@ -19,7 +19,6 @@
   "license": "MIT",
   "dependencies": {
     "bcryptjs": "^2.4.3",
-    "cloudinary": "^1.41.0",
     "compression": "^1.7.4",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",

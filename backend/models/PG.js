@@ -127,7 +127,24 @@ const pgSchema = new mongoose.Schema({
     },
     email: String,
     whatsapp: String
-  }
+  },
+  nearbyColleges: [{
+    name: {
+      type: String,
+      required: true,
+      trim: true
+    },
+    distance: {
+      type: Number,
+      required: true,
+      min: [0, 'Distance cannot be negative']
+    },
+    unit: {
+      type: String,
+      enum: ['km', 'miles', 'meter'],
+      default: 'km'
+    }
+  }]
 }, {
   timestamps: true,
   toJSON: { virtuals: true },

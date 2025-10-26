@@ -1,6 +1,6 @@
 import Maintenance from '../models/Maintenance.js';
 import Booking from '../models/Booking.js';
-import { uploadMultipleToCloudinary } from '../config/cloudinary.js';
+import { uploadMultipleToLocal, getImageUrl } from '../config/localStorage.js';
 
 // @desc    Create maintenance request
 // @route   POST /api/maintenance
@@ -37,7 +37,7 @@ export const createMaintenanceRequest = async (req, res, next) => {
     // Handle image uploads
     let images = [];
     if (req.files && req.files.length > 0) {
-      images = await uploadMultipleToCloudinary(req.files, 'rentalmate/maintenance');
+      images = await uploadMultipleToLocal(req.files, 'uploads/maintenance');
     }
 
     // Create maintenance request
@@ -63,6 +63,14 @@ export const createMaintenanceRequest = async (req, res, next) => {
       { path: 'tenant', select: 'name phone email' },
       { path: 'pg', select: 'name location' }
     ]);
+
+    // Convert relative image URLs to full URLs
+    if (maintenanceRequest.images && maintenanceRequest.images.length > 0) {
+      maintenanceRequest.images = maintenanceRequest.images.map(image => ({
+        ...image,
+        url: getImageUrl(req, image.url)
+      }));
+    }
 
     res.status(201).json({
       success: true,

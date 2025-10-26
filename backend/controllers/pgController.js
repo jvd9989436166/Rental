@@ -1,5 +1,5 @@
 import PG from '../models/PG.js';
-import { uploadMultipleToCloudinary, deleteFromCloudinary } from '../config/cloudinary.js';
+import { uploadMultipleToLocal, deleteFromLocal, getImageUrl } from '../config/localStorage.js';
 
 // @desc    Get all PGs with advanced filtering
 // @route   GET /api/pgs
@@ -96,6 +96,17 @@ export const getPGs = async (req, res, next) => {
       .skip(skip)
       .limit(Number(limit));
 
+    // Convert relative image URLs to full URLs
+    const pgsWithFullUrls = pgs.map(pg => {
+      if (pg.images && pg.images.length > 0) {
+        pg.images = pg.images.map(image => ({
+          ...image,
+          url: getImageUrl(req, image.url)
+        }));
+      }
+      return pg;
+    });
+
     // Get total count
     const total = await PG.countDocuments(query);
 
@@ -105,7 +116,7 @@ export const getPGs = async (req, res, next) => {
       total,
       totalPages: Math.ceil(total / limit),
       currentPage: Number(page),
-      data: pgs
+      data: pgsWithFullUrls
     });
   } catch (error) {
     next(error);
@@ -156,10 +167,21 @@ export const getTopRatedPGs = async (req, res, next) => {
       }
     ]);
 
+    // Convert relative image URLs to full URLs
+    const topPGsWithFullUrls = topPGs.map(pg => {
+      if (pg.images && pg.images.length > 0) {
+        pg.images = pg.images.map(image => ({
+          ...image,
+          url: getImageUrl(req, image.url)
+        }));
+      }
+      return pg;
+    });
+
     res.status(200).json({
       success: true,
       count: topPGs.length,
-      data: topPGs
+      data: topPGsWithFullUrls
     });
   } catch (error) {
     next(error);
@@ -190,6 +212,14 @@ export const getPG = async (req, res, next) => {
     pg.views += 1;
     await pg.save();
 
+    // Convert relative image URLs to full URLs
+    if (pg.images && pg.images.length > 0) {
+      pg.images = pg.images.map(image => ({
+        ...image,
+        url: getImageUrl(req, image.url)
+      }));
+    }
+
     res.status(200).json({
       success: true,
       data: pg
@@ -209,11 +239,19 @@ export const createPG = async (req, res, next) => {
 
     // Handle image uploads
     if (req.files && req.files.length > 0) {
-      const uploadedImages = await uploadMultipleToCloudinary(req.files, 'rentalmate/pgs');
+      const uploadedImages = await uploadMultipleToLocal(req.files, 'uploads/pgs');
       req.body.images = uploadedImages;
     }
 
     const pg = await PG.create(req.body);
+
+    // Convert relative image URLs to full URLs
+    if (pg.images && pg.images.length > 0) {
+      pg.images = pg.images.map(image => ({
+        ...image,
+        url: getImageUrl(req, image.url)
+      }));
+    }
 
     res.status(201).json({
       success: true,
@@ -249,7 +287,7 @@ export const updatePG = async (req, res, next) => {
 
     // Handle new image uploads
     if (req.files && req.files.length > 0) {
-      const uploadedImages = await uploadMultipleToCloudinary(req.files, 'rentalmate/pgs');
+      const uploadedImages = await uploadMultipleToLocal(req.files, 'uploads/pgs');
       req.body.images = [...(pg.images || []), ...uploadedImages];
     }
 
@@ -257,6 +295,14 @@ export const updatePG = async (req, res, next) => {
       new: true,
       runValidators: true
     });
+
+    // Convert relative image URLs to full URLs
+    if (pg.images && pg.images.length > 0) {
+      pg.images = pg.images.map(image => ({
+        ...image,
+        url: getImageUrl(req, image.url)
+      }));
+    }
 
     res.status(200).json({
       success: true,
@@ -290,11 +336,11 @@ export const deletePG = async (req, res, next) => {
       });
     }
 
-    // Delete images from Cloudinary
+    // Delete images from local storage
     if (pg.images && pg.images.length > 0) {
       for (const image of pg.images) {
-        if (image.publicId) {
-          await deleteFromCloudinary(image.publicId);
+        if (image.url) {
+          await deleteFromLocal(image.url);
         }
       }
     }
@@ -310,6 +356,59 @@ export const deletePG = async (req, res, next) => {
   }
 };
 
+// @desc    Delete individual image from PG
+// @route   DELETE /api/pgs/:id/images/:imageIndex
+// @access  Private (Owner only)
+export const deletePGImage = async (req, res, next) => {
+  try {
+    const pg = await PG.findById(req.params.id);
+
+    if (!pg) {
+      return res.status(404).json({
+        success: false,
+        message: 'PG not found'
+      });
+    }
+
+    // Check ownership
+    if (pg.owner.toString() !== req.user.id && req.user.role !== 'admin') {
+      return res.status(403).json({
+        success: false,
+        message: 'Not authorized to delete images from this PG'
+      });
+    }
+
+    const imageIndex = parseInt(req.params.imageIndex);
+    
+    if (imageIndex < 0 || imageIndex >= pg.images.length) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid image index'
+      });
+    }
+
+    // Get the image to delete
+    const imageToDelete = pg.images[imageIndex];
+    
+    // Delete image from local storage
+    if (imageToDelete.url) {
+      await deleteFromLocal(imageToDelete.url);
+    }
+
+    // Remove image from array
+    pg.images.splice(imageIndex, 1);
+    await pg.save();
+
+    res.status(200).json({
+      success: true,
+      message: 'Image deleted successfully',
+      data: pg
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 // @desc    Get owner's PGs
 // @route   GET /api/pgs/owner/my-pgs
 // @access  Private (Owner only)
@@ -319,10 +418,21 @@ export const getMyPGs = async (req, res, next) => {
       .sort({ createdAt: -1 })
       .populate('reviews');
 
+    // Convert relative image URLs to full URLs
+    const pgsWithFullUrls = pgs.map(pg => {
+      if (pg.images && pg.images.length > 0) {
+        pg.images = pg.images.map(image => ({
+          ...image,
+          url: getImageUrl(req, image.url)
+        }));
+      }
+      return pg;
+    });
+
     res.status(200).json({
       success: true,
       count: pgs.length,
-      data: pgs
+      data: pgsWithFullUrls
     });
   } catch (error) {
     next(error);

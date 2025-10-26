@@ -9,10 +9,9 @@ JWT_REFRESH_SECRET=rentalmate_refresh_token_secret_2024_secure
 JWT_REFRESH_EXPIRE=30d
 FRONTEND_URL=http://localhost:5173
 
-# Cloudinary Configuration (optional - for image uploads)
-CLOUDINARY_CLOUD_NAME=your_cloudinary_name
-CLOUDINARY_API_KEY=your_cloudinary_key
-CLOUDINARY_API_SECRET=your_cloudinary_secret
+# Image Storage Configuration
+# Using local file storage for development
+# Images are stored in ./uploads/ directory
 
 # Razorpay Configuration (optional - for payments)
 RAZORPAY_KEY_ID=your_razorpay_key

@@ -1,6 +1,6 @@
 import Review from '../models/Review.js';
 import Booking from '../models/Booking.js';
-import { uploadMultipleToCloudinary } from '../config/cloudinary.js';
+import { uploadMultipleToLocal, getImageUrl } from '../config/localStorage.js';
 
 // @desc    Create review
 // @route   POST /api/reviews
@@ -46,7 +46,7 @@ export const createReview = async (req, res, next) => {
     // Handle image uploads
     let images = [];
     if (req.files && req.files.length > 0) {
-      images = await uploadMultipleToCloudinary(req.files, 'rentalmate/reviews');
+      images = await uploadMultipleToLocal(req.files, 'uploads/reviews');
     }
 
     // Create review
@@ -61,6 +61,14 @@ export const createReview = async (req, res, next) => {
     });
 
     await review.populate('tenant', 'name avatar');
+
+    // Convert relative image URLs to full URLs
+    if (review.images && review.images.length > 0) {
+      review.images = review.images.map(image => ({
+        ...image,
+        url: getImageUrl(req, image.url)
+      }));
+    }
 
     res.status(201).json({
       success: true,

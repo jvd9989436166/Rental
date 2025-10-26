@@ -84,6 +84,12 @@ export const pgService = {
     return data
   },
 
+  // Delete individual image from PG
+  deletePGImage: async (id, imageIndex) => {
+    const { data } = await api.delete(`/pgs/${id}/images/${imageIndex}`)
+    return data
+  },
+
   // Get owner's PGs
   getMyPGs: async () => {
     const { data } = await api.get('/pgs/owner/my-pgs')

@@ -1,6 +1,6 @@
 # 🏠 RentalMate Backend API
 
-Complete MERN stack backend with MongoDB, Express.js, JWT authentication, Cloudinary integration, and Razorpay payment gateway.
+Complete MERN stack backend with MongoDB, Express.js, JWT authentication, local file storage, and Razorpay payment gateway.
 
 ## ✅ Features Implemented
 
@@ -23,7 +23,7 @@ Complete MERN stack backend with MongoDB, Express.js, JWT authentication, Cloudi
 
 ### 📸 Image Upload
 - ✅ Multer middleware for file handling
-- ✅ Cloudinary integration for cloud storage
+- ✅ Local file storage for development
 - ✅ Image optimization & transformation
 - ✅ Multiple image upload support
 - ✅ Automatic cleanup on deletion
@@ -352,7 +352,7 @@ mongod --version
 
 ### File Upload
 - `multer` - File upload middleware
-- `cloudinary` - Cloud storage
+- `local storage` - Local file storage for development
 
 ### Payment
 - `razorpay` - Payment gateway

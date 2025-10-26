@@ -12,7 +12,6 @@ import OwnerDashboard from './pages/OwnerDashboard'
 import OwnerLicenseApproval from './pages/OwnerLicenseApproval'
 import NotFound from './pages/NotFound'
 import Login from './pages/Login'
-import TestLogin from './pages/TestLogin'
 import Contact from './pages/Contact'
 
 // Protected Route Component
@@ -59,7 +58,6 @@ function App() {
         <Route path="/explore" element={<HomePage />} />
         <Route path="/pg/:id" element={<PGDetailPage />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/test-login" element={<TestLogin />} />
         <Route path="/contact" element={<Contact />} />
         
         {/* Protected Routes */}

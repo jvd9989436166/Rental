@@ -59,12 +59,6 @@ const Navbar = ({ transparent = false }) => {
               >
                 Contact
               </Link>
-              <Link
-                to="/test-login"
-                className="text-gray-700 hover:text-primary-500 transition-colors font-medium text-sm lg:text-base"
-              >
-                Test Login
-              </Link>
 
               {isAuthenticated ? (
                 <>
@@ -123,13 +117,6 @@ const Navbar = ({ transparent = false }) => {
                   onClick={() => setIsMenuOpen(false)}
                 >
                   Explore PGs
-                </Link>
-                <Link
-                  to="/test-login"
-                  className="block py-2 text-gray-700 hover:text-primary-500"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Test Login
                 </Link>
 
                 {isAuthenticated ? (

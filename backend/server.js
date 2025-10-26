@@ -6,8 +6,15 @@ import morgan from 'morgan';
 import compression from 'compression';
 import cookieParser from 'cookie-parser';
 import rateLimit from 'express-rate-limit';
+import path from 'path';
+import fs from 'fs';
+import { fileURLToPath } from 'url';
 import connectDB from './config/database.js';
 import errorHandler from './middleware/errorHandler.js';
+import { serveStaticImages } from './config/localStorage.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Import routes
 import authRoutes from './routes/authRoutes.js';
@@ -25,14 +32,27 @@ connectDB();
 // Initialize Express app
 const app = express();
 
-// Security middleware
-app.use(helmet());
+// Security middleware - relaxed for development
+app.use(helmet({
+  contentSecurityPolicy: false, // Disable CSP for development
+  crossOriginResourcePolicy: false,
+  crossOriginOpenerPolicy: false
+}));
 
 // CORS configuration
 app.use(cors({
   origin: process.env.FRONTEND_URL || 'http://localhost:5173',
   credentials: true
 }));
+
+// Additional CORS headers for all requests
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', process.env.FRONTEND_URL || 'http://localhost:5173');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  next();
+});
 
 // Rate limiting
 const limiter = rateLimit({
@@ -64,6 +84,45 @@ app.get('/health', (req, res) => {
     message: 'Server is running',
     timestamp: new Date().toISOString()
   });
+});
+
+// Test CORS route
+app.get('/test-cors', (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: 'CORS test successful',
+    headers: req.headers
+  });
+});
+
+// Image proxy with explicit CORS
+app.get('/image-proxy/*', (req, res) => {
+  const imagePath = req.params[0];
+  const fullPath = path.join(__dirname, 'uploads', imagePath);
+  
+  // Set CORS headers explicitly
+  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5173');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  
+  if (fs.existsSync(fullPath)) {
+    res.sendFile(fullPath);
+  } else {
+    res.status(404).json({ message: 'Image not found' });
+  }
+});
+
+// Serve static images
+serveStaticImages(app);
+
+// Additional CORS route for images
+app.get('/uploads/*', (req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', process.env.FRONTEND_URL || 'http://localhost:5173');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  next();
 });
 
 // API routes
