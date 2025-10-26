@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react'
 import Navbar from '../components/Navbar'
+import ReviewsSection from '../components/ReviewsSection'
 import { useParams, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { useAuthStore } from '../store/authStore'
 import { pgService } from '../services/pgService'
+import { bookingService } from '../services/bookingService'
 import toast from 'react-hot-toast'
 import { Edit, Settings, Trash2 } from 'lucide-react'
 
@@ -19,6 +21,7 @@ const PGDetailPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [analyticsData, setAnalyticsData] = useState(null)
   const [analyticsLoading, setAnalyticsLoading] = useState(false)
+  const [userBookings, setUserBookings] = useState([])
   
   // Form state for editing
   const [editFormData, setEditFormData] = useState({
@@ -68,12 +71,36 @@ const PGDetailPage = () => {
     }
   }, [id])
 
+  // Fetch user bookings for reviews
+  const fetchUserBookings = async () => {
+    if (!isAuthenticated || user?.role !== 'tenant') return
+    
+    try {
+      const response = await bookingService.getMyBookings({ pg: id })
+      // Filter for completed/active bookings that can be reviewed
+      const reviewableBookings = response.data.filter(booking => 
+        (booking.status === 'completed' || booking.status === 'active') && 
+        booking.pg === id
+      )
+      setUserBookings(reviewableBookings)
+    } catch (error) {
+      console.error('Error fetching user bookings:', error)
+    }
+  }
+
   // Fetch analytics when analytics tab is selected
   useEffect(() => {
     if (activeTab === 'analytics' && isOwner() && !analyticsData) {
       fetchAnalytics()
     }
   }, [activeTab, pg, user])
+
+  // Fetch user bookings when PG is loaded
+  useEffect(() => {
+    if (pg && isAuthenticated) {
+      fetchUserBookings()
+    }
+  }, [pg, isAuthenticated, user])
 
   const handleBookInstantly = () => {
     if (!isAuthenticated) {
@@ -469,28 +496,11 @@ const PGDetailPage = () => {
         )
       case 'reviews':
         return (
-          <div className="space-y-4">
-            <h3 className="text-xl font-semibold">Reviews</h3>
-            {pg.reviews && pg.reviews.length > 0 ? (
-              <div className="space-y-4">
-                {pg.reviews.map((review, index) => (
-                  <div key={index} className="border rounded-lg p-4">
-                    <div className="flex items-center space-x-2 mb-2">
-                      <span className="font-semibold">{review.tenant?.name || 'Anonymous'}</span>
-                      <div className="flex">
-                        {[...Array(5)].map((_, i) => (
-                          <span key={i} className={i < review.rating ? "text-yellow-500" : "text-gray-300"}>★</span>
-                        ))}
-                      </div>
-                    </div>
-                    <p className="text-gray-700">{review.comment}</p>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <p className="text-gray-600">No reviews yet</p>
-            )}
-          </div>
+          <ReviewsSection 
+            pgId={pg._id} 
+            pgReviews={pg.reviews || []}
+            userBookings={userBookings}
+          />
         )
       case 'analytics':
         if (analyticsLoading) {

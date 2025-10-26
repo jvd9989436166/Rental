@@ -24,7 +24,7 @@ router.get('/top-rated', getTopRatedPGs);
 router.use(protect);
 router.get('/owner/my-pgs', authorize('owner', 'admin'), getMyPGs);
 router.post('/', authorize('owner', 'admin'), uploadMultiple, handleUploadError, parseMultipartData, createPGValidation, validate, createPG);
-router.put('/:id', authorize('owner', 'admin'), mongoIdValidation, validate, uploadMultiple, handleUploadError, updatePG);
+router.put('/:id', authorize('owner', 'admin'), mongoIdValidation, validate, uploadMultiple, handleUploadError, parseMultipartData, updatePG);
 router.delete('/:id', authorize('owner', 'admin'), mongoIdValidation, validate, deletePG);
 router.delete('/:id/images/:imageIndex', authorize('owner', 'admin'), mongoIdValidation, validate, deletePGImage);
 router.get('/:id/stats', authorize('owner', 'admin'), mongoIdValidation, validate, getPGStats);
